@@ -24,11 +24,34 @@ services:
       - 3306
       - 33060
 
+  traefik:
+    image: "traefik:v2.6"
+    command:
+      - "--log.level=DEBUG"
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--metrics"
+      - "--metrics.prometheus.buckets=0.1,0.3,1.2,5.0"
+    ports:
+      - "80:80"
+      - "8080:8080"
+    networks:
+      - backnet
+      - frontnet
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+
   inventory_backend:
     build:
       context: inventary_backend
       target: builder
     restart: always
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.inventory.rule=(Host(`localhost`) && PathPrefix(`/inventory`))"
+      - "traefik.http.routers.inventory.entrypoints=web"
     secrets:
       - db-password
     ports:
@@ -44,6 +67,10 @@ services:
     build:
       context: products_backend
       target: builder
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.products.rule=(Host(`localhost`) && PathPrefix(`/products`))"
+      - "traefik.http.routers.products.entrypoints=web"
     restart: always
     secrets:
       - db-password
@@ -55,17 +82,6 @@ services:
     depends_on:
       db:
         condition: service_healthy
-
-  proxy:
-    build: proxy
-    restart: always
-    ports:
-      - 80:80
-    depends_on: 
-      - products_backend
-      - inventory_backend
-    networks:
-      - frontnet
 
 volumes:
   db-data:
