@@ -24,6 +24,22 @@ services:
       - 3306
       - 33060
 
+  inventory_backend:
+    build:
+      context: inventary_backend
+      target: builder
+    restart: always
+    secrets:
+      - db-password
+    ports:
+      - 8001:8001
+    networks:
+      - backnet
+      - frontnet
+    depends_on:
+      db:
+        condition: service_healthy
+
   products_backend:
     build:
       context: products_backend
@@ -40,22 +56,6 @@ services:
       db:
         condition: service_healthy
 
-   inventory_backend:
-    build:
-      context: inventory_backend
-      target: builder
-    restart: always
-    secrets:
-      - db-password
-    ports:
-      - 8001:8001
-    networks:
-      - backnet
-      - frontnet
-    depends_on:
-      db:
-        condition: service_healthy
-
   proxy:
     build: proxy
     restart: always
@@ -63,6 +63,7 @@ services:
       - 80:80
     depends_on: 
       - products_backend
+      - inventory_backend
     networks:
       - frontnet
 
