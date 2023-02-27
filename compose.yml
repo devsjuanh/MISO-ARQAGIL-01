@@ -38,6 +38,16 @@ services:
     ports:
       - "80:80"
       - "8080:8080"
+    deploy:
+      mode: global
+      placement:
+        constraints:
+          - node.role == manager
+      update_config:
+        parallelism: 1
+        delay: 10s
+      restart_policy:
+        condition: on-failure
     networks:
       - backnet
       - frontnet
