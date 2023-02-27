@@ -1,0 +1,19 @@
+config:
+  target: "http://localhost"
+  phases:
+    - duration: 60
+      arrivalRate: 1
+      name: Warm up
+    - duration: 60
+      arrivalRate: 1
+      rampTo: 5
+      name: Ramp up load
+    - duration: 60
+      arrivalRate: 5
+      name: Sustained load
+
+scenarios:
+  - name: "Order produts"
+    flow:
+      - post:
+          url: "/orders"

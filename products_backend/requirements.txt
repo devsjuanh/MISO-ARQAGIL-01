@@ -1,0 +1,4 @@
+Flask==2.0.1
+Flask-Cors==3.0.10
+mysql-connector==2.2.9
+SQLAlchemy==1.4.15
