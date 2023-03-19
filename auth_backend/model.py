@@ -19,8 +19,8 @@ class RoleEnum(fields.Field):
 class User(db.Model):
     __tablename__ = 'user'
 
-    email = db.Column(db.String, primary_key=True)
-    password = db.Column(db.String)
+    email = db.Column(db.String(50), primary_key=True)
+    password = db.Column(db.String(40))
     authenticated = db.Column(db.Boolean, default=False)
     role = db.Column(db.Enum(Role))
 
