@@ -149,15 +149,6 @@ services:
       - "traefik.enable=true"      
       - "traefik.http.routers.products.rule=(Host(`localhost`) && PathPrefix(`/products`))"
       - "traefik.http.routers.products.entrypoints=websecure"     
-      - "traefik.http.routers.products.entrypoints=websecure"     
-      - "traefik.http.routers.products.entrypoints=web" 
-      
-      - "traefik.http.routers.products.middlewares=redirect-regex"
-      - "traefik.http.routers.products.entrypoints=websecure"    
-      - "traefik.http.routers.products.entrypoints=web" 
-      
-      - "traefik.http.routers.products.middlewares=redirect-regex"
-
     restart: always
     secrets:
       - db-password
