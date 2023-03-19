@@ -8,6 +8,9 @@ from flask_jwt_extended import jwt_required, create_access_token, get_jwt_identi
 usuario_schema = UsuarioSchema()
 
 class VistaSignIn(Resource):
+
+    def get(self):
+        return {"mensaje":"hola mundo"}
     
     def post(self):
         nuevo_usuario = User(email=request.json["email"], password=request.json["password"])
