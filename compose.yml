@@ -169,15 +169,6 @@ services:
         - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
     networks:
         - rabbitmq_go_net
-## User's Database
-  users_db:
-    image: postgres:13-alpine
-    volumes:
-      - postgres_data:/var/lib/postgresql/data/
-    environment:
-      - POSTGRES_USER=user_admin
-      - POSTGRES_PASSWORD=passw0rd
-      - POSTGRES_DB=auth_users
 
 ## Auth Backend
   auth_backend:
@@ -194,13 +185,13 @@ services:
     ports:
       - 8005:8005
     env_file:
-      - ./.env.dev
+      - ./auth_backend/.env.dev
     networks:
       - backnet
       - frontnet
       - rabbitmq_go_net
     depends_on:
-      users_db:
+      db:
         condition: service_healthy
 
 volumes:

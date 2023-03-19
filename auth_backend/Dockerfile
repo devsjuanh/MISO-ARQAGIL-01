@@ -1,5 +1,5 @@
 # pull official base image
-FROM python:3.10.7-slim-buster
+FROM --platform=$BUILDPLATFORM python:3.10-alpine AS builder
 
 # set work directory
 WORKDIR /usr/src/app

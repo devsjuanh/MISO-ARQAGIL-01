@@ -10,7 +10,7 @@ class Role(enum.Enum):
    CLIENTE = 2
    ADMIN = 3
 
-class Role(fields.Field):
+class RoleEnum(fields.Field):
     def _serialize(self, value, attr, obj, **kwargs):
         if value is None:
             return None
@@ -42,7 +42,7 @@ class User(db.Model):
 
 class UsuarioSchema(SQLAlchemyAutoSchema):
 
-    role = EnumADiccionario(attribute=("role"))
+    role = RoleEnum(attribute=("role"))
 
     class Meta:
          model = User
