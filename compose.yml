@@ -80,13 +80,6 @@ services:
        - "traefik.http.routers.prometheus.rule=(Host(`prometheus.localhost`)) || (Host(`localhost`) && PathPrefix(`/prometheus`))"       
        - "traefik.http.services.prometheus.loadbalancer.server.port=9090"
        - "traefik.http.routers.prometheus.entrypoints=websecure"
-       - "traefik.http.routers.prometheus.entrypoints=web" 
-        
-       - "traefik.http.routers.prometheus.middlewares=redirect-regex"
-
-       - "traefik.http.middlewares.redirect-regex.redirectregex.regex=(.)*"
-       - "traefik.http.middlewares.redirect-regex.redirectregex.replacement=http://localhost:443/prometheus"
-       - "traefik.http.middlewares.redirect-regex.redirectregex.permanent=true"
 
 ## Metrics Service
   grafana:
@@ -107,14 +100,6 @@ services:
         - "traefik.http.routers.grafana.rule=(Host(`grafana.localhost`)) || (Host(`localhost`) && PathPrefix(`/grafana`))"
         - "traefik.http.services.grafana.loadbalancer.server.port=3000"
         - "traefik.http.routers.grafana.entrypoints=websecure"
-        - "traefik.http.routers.grafana.entrypoints=web" 
-      
-        - "traefik.http.routers.grafana.middlewares=redirect-regex"
-
-        - "traefik.http.middlewares.redirect-regex.redirectregex.regex=(.)*"
-        - "traefik.http.middlewares.redirect-regex.redirectregex.replacement=http://localhost:443/grafana"
-        - "traefik.http.middlewares.redirect-regex.redirectregex.permanent=true"
-
 
 ## Backend Service
   orders_backend:
@@ -124,15 +109,8 @@ services:
     restart: always
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.order.rule=(Host(`localhost`) && PathPrefix(`/orders`))"
       - "traefik.http.routers.order.entrypoints=websecure"
-      - "traefik.http.routers.order.entrypoints=web" 
-      
-      - "traefik.http.routers.order.middlewares=redirect-regex"
-
-      - "traefik.http.middlewares.redirect-regex.redirectregex.regex=(.)*"
-      - "traefik.http.middlewares.redirect-regex.redirectregex.replacement=http://localhost:443/orders"
-      - "traefik.http.middlewares.redirect-regex.redirectregex.permanent=true"
+      - "traefik.http.routers.order.rule=(Host(`localhost`) && PathPrefix(`/orders`))"
     secrets:
       - db-password
     ports:
@@ -168,16 +146,18 @@ services:
       context: products_backend
       target: builder
     labels:
-      - "traefik.enable=true"
+      - "traefik.enable=true"      
       - "traefik.http.routers.products.rule=(Host(`localhost`) && PathPrefix(`/products`))"
+      - "traefik.http.routers.products.entrypoints=websecure"     
       - "traefik.http.routers.products.entrypoints=websecure"     
       - "traefik.http.routers.products.entrypoints=web" 
       
       - "traefik.http.routers.products.middlewares=redirect-regex"
+      - "traefik.http.routers.products.entrypoints=websecure"    
+      - "traefik.http.routers.products.entrypoints=web" 
+      
+      - "traefik.http.routers.products.middlewares=redirect-regex"
 
-      - "traefik.http.middlewares.redirect-regex.redirectregex.regex=(.)*"
-      - "traefik.http.middlewares.redirect-regex.redirectregex.replacement=http://localhost:443/products"
-      - "traefik.http.middlewares.redirect-regex.redirectregex.permanent=true"
     restart: always
     secrets:
       - db-password
@@ -213,13 +193,6 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.auth.rule=(Host(`localhost`) && PathPrefix(`/auth`))"
       - "traefik.http.routers.auth.entrypoints=websecure"
-      - "traefik.http.routers.auth.entrypoints=web"
-
-      - "traefik.http.routers.auth.middlewares=redirect-regex"
-
-      - "traefik.http.middlewares.redirect-regex.redirectregex.regex=(.)*"
-      - "traefik.http.middlewares.redirect-regex.redirectregex.replacement=http://localhost:443/auth"
-      - "traefik.http.middlewares.redirect-regex.redirectregex.permanent=true"
     restart: always
     secrets:
       - db-password
