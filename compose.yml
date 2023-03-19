@@ -34,12 +34,17 @@ services:
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
       - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--certificatesresolvers.leresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
+      - "--certificatesresolvers.leresolver.acme.email=your@email.com"
+      - "--certificatesresolvers.leresolver.acme.storage=/acme.json"
+      - "--certificatesresolvers.leresolver.acme.tlschallenge=true"
       - "--metrics"
       - "--metrics.prometheus=true"
       - "--metrics.prometheus.buckets=0.1,0.3,1.2,5.0"
-
     ports:
       - "80:80"
+      - "443:443"
       - "8080:8080"
     networks:
       - backnet
@@ -74,7 +79,7 @@ services:
        - "traefik.enable=true"
        - "traefik.http.routers.prometheus.rule=(Host(`prometheus.localhost`)) || (Host(`localhost`) && PathPrefix(`/prometheus`))"       
        - "traefik.http.services.prometheus.loadbalancer.server.port=9090"
-       - "traefik.http.routers.prometheus.entrypoints=web"
+       - "traefik.http.routers.prometheus.entrypoints=websecure"
 
 ## Metrics Service
   grafana:
@@ -94,7 +99,7 @@ services:
         - "traefik.enable=true"
         - "traefik.http.routers.grafana.rule=(Host(`grafana.localhost`)) || (Host(`localhost`) && PathPrefix(`/grafana`))"
         - "traefik.http.services.grafana.loadbalancer.server.port=3000"
-        - "traefik.http.routers.grafana.entrypoints=web"
+        - "traefik.http.routers.grafana.entrypoints=websecure"
 
 ## Backend Service
   orders_backend:
@@ -104,8 +109,8 @@ services:
     restart: always
     labels:
       - "traefik.enable=true"
+      - "traefik.http.routers.order.entrypoints=websecure"
       - "traefik.http.routers.order.rule=(Host(`localhost`) && PathPrefix(`/orders`))"
-      - "traefik.http.routers.order.entrypoints=web"
     secrets:
       - db-password
     ports:
@@ -141,9 +146,9 @@ services:
       context: products_backend
       target: builder
     labels:
-      - "traefik.enable=true"
+      - "traefik.enable=true"      
       - "traefik.http.routers.products.rule=(Host(`localhost`) && PathPrefix(`/products`))"
-      - "traefik.http.routers.products.entrypoints=web"
+      - "traefik.http.routers.products.entrypoints=websecure"     
     restart: always
     secrets:
       - db-password
@@ -178,7 +183,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.auth.rule=(Host(`localhost`) && PathPrefix(`/auth`))"
-      - "traefik.http.routers.auth.entrypoints=web"
+      - "traefik.http.routers.auth.entrypoints=websecure"
     restart: always
     secrets:
       - db-password
