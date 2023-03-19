@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_cors import CORS
+from roles import jwt
 from model import db
 from vista import VistaSignIn
 from flask_jwt_extended import JWTManager
@@ -25,4 +26,4 @@ db.create_all()
 api = Api(app)
 api.add_resource(VistaSignIn, '/')
 
-jwt = JWTManager(app)
+jwt.init_app(app)
