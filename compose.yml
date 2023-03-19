@@ -195,7 +195,6 @@ services:
     networks:
       - backnet
       - frontnet
-      - rabbitmq_go_net
     depends_on:
       db:
         condition: service_healthy
