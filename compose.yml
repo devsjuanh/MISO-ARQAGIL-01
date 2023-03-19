@@ -148,7 +148,8 @@ services:
     labels:
       - "traefik.enable=true"      
       - "traefik.http.routers.products.rule=(Host(`localhost`) && PathPrefix(`/products`))"
-      - "traefik.http.routers.products.entrypoints=websecure"     
+      - "traefik.http.routers.products.entrypoints=websecure" 
+      - "traefik.http.middlewares.products_backend.forwardauth.address=http://auth_backend/"    
     restart: always
     secrets:
       - db-password
