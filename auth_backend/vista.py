@@ -4,7 +4,7 @@ from model import db, User, UsuarioSchema, Role
 from flask_restful import Resource
 from sqlalchemy.exc import IntegrityError
 from flask_jwt_extended import jwt_required, create_access_token, get_jwt_identity
-from roles import check_access
+from role import check_access
 
 usuario_schema = UsuarioSchema()
 
@@ -16,7 +16,7 @@ class VistaSignIn(Resource):
     
     def post(self):
         user_role = None
-        if request.json["role"] is None:
+        if request.json.get("role", None) is None:
             user_role = Role.VENDEDOR
         nuevo_usuario = User(
             email=request.json["email"], 
